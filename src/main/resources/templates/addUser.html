@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Create a new User</title>
+    <link rel="stylesheet" href="/css/style.css?version=5">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+</head>
+<body>
+<header class="links">
+    <a href="/homepage">
+        <span class="material-icons" style="font-size: 22px">home</span>
+    </a>
+    <form action="/logout" method="post">
+        <button type="submit">Sign out</button>
+    </form>
+</header>
+<div class="formContainer">
+    <h2>Create a new User</h2>
+    <form action="/createUserAdmin" id="userForm" method="POST">
+        <input type="text" id="firstName" name="firstName" placeholder="First Name" required><br><br>
+        <input type="text" id="lastName" name="lastName" placeholder="Last Name" required><br><br>
+        <input type="email" id="mail" name="mail" placeholder="Mail" required><br><br>
+        <input type="password" id="password" name="password"  placeholder="Password" required><br><br>
+        <label for="isAdmin">Does this User have admin rights ?</label>
+        <input type="checkbox" id="isAdmin" name="isAdmin"><br><br>
+        <label for="isDisabled">Is the User disabled ?</label>
+        <input type="checkbox" id="isDisabled" name="isDisabled"><br><br>
+        <button type="submit">Create</button>
+    </form>
+</div>
+</body>
+<script>
+    document.getElementById('userForm').addEventListener('submit', function(env) {
+        const password = document.getElementById('password').value;
+        const strongRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z]).{7,}$/;
+        if (!strongRegex.test(password)) {
+            alert("The password should have at least one upper case letter, one lower case letter, one digit or symbol, and at least 7 characters.");
+            env.preventDefault();
+        }
+    });
+</script>
+</html>

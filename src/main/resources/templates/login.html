@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Connexion</title>
+    <link rel="stylesheet" href="/css/style.css?version=4">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+</head>
+<body>
+<div class="formContainer">
+    <h2>Connexion</h2>
+    <form action="/loginAdmin" method="POST">
+        <input type="email" placeholder="Email address" id="mail" name="mail" required>
+        <input type="password" placeholder="Password" id="password" name="password" required>
+        <button type="submit">Log in</button>
+    </form>
+</div>
+<div th:if="${message}" class="popup-overlay" id="popupMessage">
+    <div class="popup-message">
+        <span th:text="${message}"></span>
+        <button onclick="document.getElementById('popupMessage').style.display='none'" class="close-popup">
+            <span class="material-icons" style="font-size: 22px">close</span>
+        </button>
+    </div>
+</div>
+<script>
+    window.addEventListener('DOMContentLoaded', function() {
+        let popup = document.getElementById('popupMessage');
+        if (popup) {
+            setTimeout(function() {
+                    popup.style.display = 'none';
+                }
+                ,5000); // 5000ms = 5 seconds
+        }
+    });
+</script>
+</body>
+</html>

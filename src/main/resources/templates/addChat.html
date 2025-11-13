@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Create a new chat</title>
+    <link rel="stylesheet" href="/css/style.css?version=5">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+</head>
+<body>
+<header class="links">
+    <a href="/homepage">
+        <span class="material-icons" style="font-size: 22px">home</span>
+    </a>
+    <form action="/logout" method="post">
+        <button type="submit">Sign out</button>
+    </form>
+</header>
+<div class="formContainer">
+    <h2>Create a Chat</h2>
+    <form action="/createChatAdmin" method="POST">
+        <input type="email" id="mail" name="mail" placeholder="Creator's mail" required><br><br>
+        <input type="datetime-local" id="startDate" name="startDate" required><br><br>
+        <input type="datetime-local" id="validityDate" name="validityDate" required><br><br>
+        <input type="text" id="title" name="title"  placeholder="Title" required><br><br>
+        <input type="text" id="description" name="description"  placeholder="Description" required><br><br>
+        <label for="invitedMail">Invitations list (Mail,mail,mail,...)</label>
+        <input type="email" multiple id="invitedMail" name="invitedMail"  placeholder="Mail,mail,mail"><br><br>
+        <label for="isDisabled">Is the Chat disabled ?</label>
+        <input type="checkbox" id="isDisabled" name="isDisabled"><br><br>
+        <button type="submit">Create</button>
+    </form>
+</div>
+<div th:if="${message}" class="popup-overlay" id="popupMessage">
+    <div class="popup-message">
+        <span th:text="${message}"></span>
+        <button onclick="document.getElementById('popupMessage').style.display='none'" class="close-popup">
+            <span class="material-icons" style="font-size: 22px">close</span>
+        </button>
+    </div>
+</div>
+<script>
+    window.addEventListener('DOMContentLoaded', function() {
+        let popup = document.getElementById('popupMessage');
+        if (popup) {
+            setTimeout(function() {
+                    popup.style.display = 'none';
+                }
+                ,5000); // 5000ms = 5 seconds
+        }
+    });
+</script>
+</body>
+</html>
