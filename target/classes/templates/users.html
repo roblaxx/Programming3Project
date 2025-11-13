@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Users list</title>
+    <link rel="stylesheet" href="/css/style.css?version=6">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+</head>
+<body>
+<header class="links">
+    <a href="/homepage">
+        <span class="material-icons" style="font-size: 22px">home</span>
+    </a>
+    <form action="/logout" method="post">
+        <button type="submit">Sign out</button>
+    </form>
+</header>
+<main>
+    <h1>Users list</h1>
+    <div class="search-container">
+        <input type="text" id="searchInput" onkeyup="searchUsers()" placeholder="Look for an user/ email ..." class="search-bar">
+        <button type="button" id="disabledFilterBtn" onclick="toggleDisabledFilter()" style="margin-left: 10px;">Only Show disabled</button>
+    </div>
+    <table id="userTable" class="customTable">
+        <tr>
+            <th onclick="sortTable(0)">First Name</th>
+            <th onclick="sortTable(1)">Last Name</th>
+            <th onclick="sortTable(2)">Mail</th>
+            <th onclick="sortTable(3)">Admin</th>
+            <th onclick="sortTable(4)">Active</th>
+            <th></th>
+            <th></th>
+        </tr>
+        <tr th:each="user : ${users}" class="item" th:attr="data-disabled=${user.getIsDisabled()}">
+            <td th:text="${user.getFirstname()}"></td>
+            <td th:text="${user.getLastname()}"></td>
+            <td th:text="${user.getMail()}"></td>
+            <td>
+                <span th:if="${user.getIsAdmin()}" class="material-icons" style="color: green; font-size: 22px">check_circle</span>
+                <span th:if="${!user.getIsAdmin()}" class="material-icons" style="color: red; font-size: 22px">cancel</span>
+            </td>
+            <td>
+                <span th:if="${!user.getIsDisabled()}" class="material-icons" style="color: green; font-size: 22px">check_circle</span>
+                <span th:if="${user.getIsDisabled()}" class="material-icons" style="color: red; font-size: 22px">cancel</span>
+            </td>
+            <td>
+                <form th:action="@{/users/{id}(id=${user.getUserId()})}" method="post">
+                    <button type="submit">
+                        <span class="material-icons" style="font-size: 22px">edit</span>
+                    </button>
+                </form>
+            </td>
+            <td>
+                <a th:href="@{/users/delete/{id}(id=${user.getUserId()})}" class="buttonStyle">
+                    <button type="submit">
+                        <span class="material-icons" style="font-size: 22px">delete</span>
+                    </button>
+                </a>
+            </td>
+        </tr>
+    </table>
+    <div class="pagination">
+        <button id="prevPage" onclick="previousPage()">Previous</button>
+        <span id="pageInfo">Page 1</span>
+        <button id="nextPage" onclick="nextPage()">Next</button>
+    </div>
+    <div class="links">
+        <a href="/addUser">Create an account</a>
+    </div>
+    <div th:if="${message}" class="popup-overlay" id="popupMessage">
+        <div class="popup-message">
+            <span th:text="${message}"></span>
+            <button onclick="document.getElementById('popupMessage').style.display='none'" class="close-popup">
+                <span class="material-icons" style="font-size: 22px">close</span>
+            </button>
+        </div>
+    </div>
+</main>
+<script>
+    let currentPage = 1;
+    const itemsPerPage = 4;
+    function updatePagination() {
+        const allRows = Array.from(document.querySelectorAll('#userTable .item'));
+        // Find the lines that fit the desired criterias
+        const visibleRows = allRows.filter(row => !row.classList.contains('filtered-out'));
+        const startIndex = (currentPage - 1) * itemsPerPage;
+        const endIndex = startIndex + itemsPerPage;
+
+        // Step 1 : Hide all the lines
+        allRows.forEach(row => row.style.display = 'none');
+
+        // Étape 2 : Show the adequate lines
+        visibleRows.slice(startIndex, endIndex).forEach(row => row.style.display = '');
+
+        // Refresh the elements of the page
+        document.getElementById('pageInfo').textContent = `Page ${currentPage}`;
+        document.getElementById('prevPage').disabled = currentPage === 1;
+        document.getElementById('nextPage').disabled = endIndex >= visibleRows.length;
+    }
+    function previousPage() {
+        if (currentPage > 1) {
+            currentPage--;
+            updatePagination();
+        }
+    }
+
+    function nextPage() {
+        currentPage++;
+        updatePagination();
+    }
+    function sortTable(n) {
+        let table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+        table = document.getElementById("userTable");
+        switching = true;
+        dir = "asc";
+        while (switching) {
+            switching = false;
+            rows = table.rows;
+            for (i = 1; i < (rows.length - 1); i++) {
+                shouldSwitch = false;
+                x = rows[i].getElementsByTagName("TD")[n];
+                y = rows[i + 1].getElementsByTagName("TD")[n];
+                if (dir == "asc") {
+                    if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+                        shouldSwitch = true;
+                        break;
+                    }
+                } else if (dir == "desc") {
+                    if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+                        shouldSwitch = true;
+                        break;
+                    }
+                }
+            }
+            if (shouldSwitch) {
+                rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                switching = true;
+                switchcount ++;
+            } else {
+                if (switchcount == 0 && dir == "asc") {
+                    dir = "desc";
+                    switching = true;
+                }
+            }
+        }
+        currentPage = 1;  // // Refresh the page
+        updatePagination();
+    }
+
+    let showDisabledOnly = false;
+
+    function toggleDisabledFilter() {
+        showDisabledOnly = !showDisabledOnly;
+        const btn = document.getElementById("disabledFilterBtn");
+        btn.textContent = showDisabledOnly ? "Show all users" : "Only show disabled users";
+        searchUsers();
+        currentPage = 1;  // Refresh the page
+        updatePagination();
+    }
+
+    function searchUsers() {
+        const input = document.getElementById("searchInput");
+        const filter = input.value.trim().toLowerCase();
+        const table = document.getElementById("userTable");
+        const rows = table.getElementsByClassName("item");
+        for (let row of rows) {
+            const firstName = row.getElementsByTagName("td")[0].textContent.toLowerCase();
+            const lastName = row.getElementsByTagName("td")[1].textContent.toLowerCase();
+            const email = row.getElementsByTagName("td")[2].textContent.toLowerCase();
+            const isDisabled = row.getAttribute("data-disabled") === "true";
+            const matchesSearch = (
+                firstName.includes(filter) ||
+                lastName.includes(filter) ||
+                email.includes(filter)
+            );
+            const matchesDisabled = !showDisabledOnly || isDisabled;
+            if (matchesSearch && matchesDisabled) {
+                row.classList.remove('filtered-out');
+            } else {
+                row.classList.add('filtered-out');
+            }
+        }
+        currentPage = 1;  // Refresh the page
+        updatePagination();
+    }
+    document.addEventListener('DOMContentLoaded', updatePagination);
+</script>
+</body>
+</html>

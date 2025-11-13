@@ -1,0 +1,48 @@
+# =========================
+#  Fichier modèle de configuration Spring Boot
+#  Renommez ce fichier en application.properties et adaptez-le à votre environnement local.
+#  Ne mettez jamais vos vrais mots de passe ou secrets dans ce fichier versionné !
+# =========================
+
+# --- Base de données ---
+spring.datasource.url=jdbc:postgresql://localhost:5432/your_database
+spring.datasource.username=your_db_user
+spring.datasource.password=your_db_password
+
+# --- Hibernate ---
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.open-in-view=false
+
+# --- Port du serveur ---
+server.port=8081
+
+# --- CORS (pour développement React local) ---
+spring.mvc.cors.allowed-origins=http://localhost:3000
+spring.mvc.cors.allowed-methods=GET,POST,PUT,DELETE,OPTIONS
+spring.mvc.cors.allowed-headers=*
+
+# --- Mail (adapter selon votre serveur SMTP) ---
+spring.mail.host=smtp.example.com
+spring.mail.port=587
+spring.mail.username=your_email@example.com
+spring.mail.password=your_email_password
+spring.mail.protocol=smtp
+spring.mail.properties.mail.smtp.auth=true
+spring.mail.properties.mail.smtp.starttls.enable=true
+spring.mail.default-encoding=UTF-8
+
+# --- HikariCP (pool de connexions JDBC) ---
+spring.datasource.hikari.minimum-idle=2
+spring.datasource.hikari.maximum-pool-size=10
+spring.datasource.hikari.connection-timeout=20000
+spring.datasource.hikari.idle-timeout=300000
+spring.datasource.hikari.max-lifetime=1200000
+spring.datasource.hikari.leak-detection-threshold=60000
+spring.datasource.hikari.pool-name=SR03-HikariCP
+spring.datasource.hikari.auto-commit=true
+spring.datasource.hikari.transaction-isolation=TRANSACTION_READ_COMMITTED
+
+# =========================
+#  Ce fichier est un modèle.
+#  Copiez-le en application.properties et personnalisez-le pour chaque environnement.
+# =========================

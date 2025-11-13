@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Admin homepage</title>
+    <link rel="stylesheet" href="/css/style.css?version=4">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+</head>
+<body>
+    <header class="links">
+        <a href="/homepage">
+            <span class="material-icons" style="font-size: 22px">home</span>
+        </a>
+        <form action="/logout" method="post">
+            <button type="submit">Sign out</button>
+        </form>
+    </header>
+<div class="formContainer">
+    <h2>Users setting</h2>
+    <p>Organize the user profiles of the application.</p>
+    <form action="/users" method="get">
+        <button type="submit">Go to users setting</button>
+    </form>
+
+    <hr style="width: 80%; margin: 2rem 0; border: none; border-top: 1px solid #e0e7ef;" />
+
+    <h2>Chats setting</h2>
+    <p>Organize the chats of the application</p>
+    <form action="/chats" method="get">
+        <button type="submit">Go to chats settings</button>
+    </form>
+</div>
+</body>
+</html>
